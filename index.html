@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Luas Tanah</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Library html2pdf.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-4 md:p-8 text-gray-800">
+
+    <!-- HEADER by AES -->
+    <div class="max-w-6xl mx-auto mb-6 flex flex-col items-center justify-center text-center">
+        <h1 class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-green-500 drop-shadow-sm">
+            Aplikasi Ukur Tanah
+        </h1>
+        <p class="mt-2 px-4 py-1 bg-gray-200 text-gray-700 font-bold tracking-widest uppercase text-xs rounded-full shadow-inner">
+            by AES
+        </p>
+    </div>
+
+    <div class="max-w-6xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row">
+        
+        <!-- BAGIAN KIRI: FORM INPUT -->
+        <div class="w-full md:w-1/3 p-6 md:p-8 bg-gray-50 border-r border-gray-200">
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">Kalkulator Luas Tanah</h1>
+            <p class="text-sm text-gray-500 mb-6">Masukkan panjang dan batas dari 4 sisi bidang tanah.</p>
+
+            <form id="calcForm" class="space-y-5">
+                <!-- Utara -->
+                <div class="p-4 bg-white rounded-lg shadow-sm border-t-4 border-blue-500">
+                    <h3 class="font-bold text-blue-700 mb-3 text-sm uppercase">Sisi Utara (Atas)</h3>
+                    <div class="flex flex-col gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Panjang (Meter)</label>
+                            <input type="number" id="u_len" step="any" required class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" placeholder="Contoh: 15">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Batas Tanah</label>
+                            <input type="text" id="u_bat" required class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" placeholder="Contoh: Jalan Desa">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timur -->
+                <div class="p-4 bg-white rounded-lg shadow-sm border-r-4 border-green-500">
+                    <h3 class="font-bold text-green-700 mb-3 text-sm uppercase">Sisi Timur (Kanan)</h3>
+                    <div class="flex flex-col gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Panjang (Meter)</label>
+                            <input type="number" id="t_len" step="any" required class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500 text-sm" placeholder="Contoh: 20">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Batas Tanah</label>
+                            <input type="text" id="t_bat" required class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500 text-sm" placeholder="Contoh: Tanah Pak Budi">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selatan -->
+                <div class="p-4 bg-white rounded-lg shadow-sm border-b-4 border-orange-500">
+                    <h3 class="font-bold text-orange-700 mb-3 text-sm uppercase">Sisi Selatan (Bawah)</h3>
+                    <div class="flex flex-col gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Panjang (Meter)</label>
+                            <input type="number" id="s_len" step="any" required class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm" placeholder="Contoh: 14">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Batas Tanah</label>
+                            <input type="text" id="s_bat" required class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm" placeholder="Contoh: Selokan">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Barat -->
+                <div class="p-4 bg-white rounded-lg shadow-sm border-l-4 border-red-500">
+                    <h3 class="font-bold text-red-700 mb-3 text-sm uppercase">Sisi Barat (Kiri)</h3>
+                    <div class="flex flex-col gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Panjang (Meter)</label>
+                            <input type="number" id="b_len" step="any" required class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500 text-sm" placeholder="Contoh: 21">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Batas Tanah</label>
+                            <input type="text" id="b_bat" required class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-500 text-sm" placeholder="Contoh: Kebun Ibu Siti">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition">
+                    Hitung & Buat Sketsa
+                </button>
+            </form>
+        </div>
+
+        <!-- BAGIAN KANAN: PREVIEW HASIL & KANVAS -->
+        <div class="w-full md:w-2/3 p-6 md:p-8 bg-white flex flex-col">
+            
+            <div id="welcomeState" class="flex-1 flex flex-col items-center justify-center text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+                </svg>
+                <p>Silakan input data di samping untuk melihat hasil.</p>
+            </div>
+
+            <div id="resultState" class="hidden flex-col h-full">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
+                    <h2 class="text-xl font-bold text-gray-800">Hasil & Sketsa</h2>
+                    <button type="button" onclick="generatePDF()" class="bg-gray-800 hover:bg-gray-700 text-white px-5 py-2.5 rounded text-sm font-semibold flex items-center gap-2 transition shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Cetak PDF (A4)
+                    </button>
+                </div>
+
+                <!-- Hasil Kalkulasi -->
+                <div class="bg-blue-50 border border-blue-200 rounded p-4 text-center mb-6 shadow-sm">
+                    <p class="text-sm font-semibold text-blue-800 mb-1">Total Luas</p>
+                    <p class="text-3xl font-bold text-blue-600"><span id="ui_luas">0</span> <span class="text-lg font-medium">m²</span></p>
+                    <p class="text-xl font-bold text-gray-700 mt-1"><span id="ui_ubin">0</span> <span class="text-sm font-medium text-gray-500">Ubin</span></p>
+                </div>
+
+                <!-- Kanvas Sketsa (Ukuran diperbesar agar resolusi tajam) -->
+                <div class="flex-1 flex items-center justify-center bg-gray-50 border border-gray-200 rounded-lg p-2 overflow-hidden relative shadow-inner">
+                    <!-- Penunjuk Arah Utara -->
+                    <div class="absolute top-4 left-4 flex flex-col items-center text-gray-500 bg-white p-2 rounded shadow-sm border border-gray-100 z-10">
+                        <span class="text-xs font-bold mb-1">UTARA</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                        </svg>
+                    </div>
+                    
+                    <!-- Resolusi diset tinggi (800x600) tapi CSS max-w-full membuatnya responsif -->
+                    <canvas id="sketchCanvas" width="800" height="600" class="w-full max-w-[800px] h-auto drop-shadow-lg bg-white rounded"></canvas>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let currentLuas = 0;
+        let currentUbin = 0;
+
+        document.getElementById('calcForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Ambil Nilai
+            const u = parseFloat(document.getElementById('u_len').value);
+            const t = parseFloat(document.getElementById('t_len').value);
+            const s = parseFloat(document.getElementById('s_len').value);
+            const b = parseFloat(document.getElementById('b_len').value);
+
+            const u_bat = document.getElementById('u_bat').value;
+            const t_bat = document.getElementById('t_bat').value;
+            const s_bat = document.getElementById('s_bat').value;
+            const b_bat = document.getElementById('b_bat').value;
+
+            // Kalkulasi Luas Tanah (Metode Persegi Panjang Sembarang)
+            // ((Utara+Selatan)/2) * ((Timur+Barat)/2)
+            currentLuas = ((u + s) / 2) * ((t + b) / 2);
+            currentUbin = currentLuas / 14;
+
+            // Tampilkan UI
+            document.getElementById('ui_luas').innerText = currentLuas.toFixed(2);
+            document.getElementById('ui_ubin').innerText = currentUbin.toFixed(2);
+
+            document.getElementById('welcomeState').style.display = 'none';
+            document.getElementById('resultState').style.display = 'flex';
+
+            // Gambar Sketsa di Canvas
+            drawPolygon(u, t, s, b, u_bat, t_bat, s_bat, b_bat);
+        });
+
+        function drawPolygon(u, t, s, b, u_bat, t_bat, s_bat, b_bat) {
+            const canvas = document.getElementById('sketchCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Bersihkan canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // PADDING YANG BESAR agar batas tidak terpotong (150 pixel dari tepi canvas)
+            const paddingX = 180; // Padding horizontal lebih besar untuk teks kiri-kanan
+            const paddingY = 130; // Padding vertikal untuk teks atas-bawah
+            const drawW = canvas.width - (paddingX * 2);
+            const drawH = canvas.height - (paddingY * 2);
+
+            // Menentukan skala poligon agar pas di area gambar (drawW x drawH)
+            const maxHoriz = Math.max(u, s);
+            const maxVert = Math.max(t, b);
+            
+            const scaleX = drawW / maxHoriz;
+            const scaleY = drawH / maxVert;
+            const scale = Math.min(scaleX, scaleY);
+
+            const scaledU = u * scale;
+            const scaledS = s * scale;
+            const scaledT = t * scale;
+            const scaledB = b * scale;
+
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+
+            // Menghitung Koordinat 4 Sudut (Memusatkan Poligon)
+            const tl_x = cx - (scaledU / 2);
+            const tl_y = cy - (scaledT / 2); // Atas Kiri
+            
+            const tr_x = cx + (scaledU / 2);
+            const tr_y = cy - (scaledT / 2); // Atas Kanan
+            
+            const br_x = cx + (scaledS / 2);
+            const br_y = cy + (scaledB / 2); // Bawah Kanan
+            
+            const bl_x = cx - (scaledS / 2);
+            const bl_y = cy + (scaledB / 2); // Bawah Kiri
+
+            // Menggambar Area Tanah
+            ctx.beginPath();
+            ctx.moveTo(tl_x, tl_y); // Mulai dari atas kiri
+            ctx.lineTo(tr_x, tr_y); // Ke atas kanan
+            ctx.lineTo(br_x, br_y); // Ke bawah kanan
+            ctx.lineTo(bl_x, bl_y); // Ke bawah kiri
+            ctx.closePath();
+
+            // Mewarnai Bidang Tanah
+            ctx.fillStyle = '#dcfce7'; // Hijau muda (Tailwind green-100)
+            ctx.fill();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = '#16a34a'; // Hijau tua (Tailwind green-600)
+            ctx.stroke();
+
+            // KONFIGURASI TEKS PADA KANVAS
+            // Mengatur font yang cukup besar untuk resolusi 800x600
+            
+            // Label Utara (Atas)
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'bottom'; // Teks berada di atas garis y yang ditentukan
+            ctx.fillStyle = '#1e293b';
+            ctx.font = 'bold 20px sans-serif';
+            ctx.fillText(`${u} m`, cx, Math.min(tl_y, tr_y) - 20); // Jarak 20px dari garis
+            ctx.fillStyle = '#64748b';
+            ctx.font = 'normal 18px sans-serif';
+            ctx.fillText(`Batas: ${u_bat}`, cx, Math.min(tl_y, tr_y) - 45); // Teks batas di atas panjang
+
+            // Label Selatan (Bawah)
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top'; // Teks berada di bawah garis y yang ditentukan
+            ctx.fillStyle = '#1e293b';
+            ctx.font = 'bold 20px sans-serif';
+            ctx.fillText(`${s} m`, cx, Math.max(bl_y, br_y) + 20); // Jarak 20px dari garis bawah
+            ctx.fillStyle = '#64748b';
+            ctx.font = 'normal 18px sans-serif';
+            ctx.fillText(`Batas: ${s_bat}`, cx, Math.max(bl_y, br_y) + 45); // Teks batas di bawah panjang
+
+            // Label Timur (Kanan)
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#1e293b';
+            ctx.font = 'bold 20px sans-serif';
+            ctx.fillText(`${t} m`, Math.max(tr_x, br_x) + 20, cy - 12);
+            ctx.fillStyle = '#64748b';
+            ctx.font = 'normal 18px sans-serif';
+            ctx.fillText(`Batas: ${t_bat}`, Math.max(tr_x, br_x) + 20, cy + 15);
+
+            // Label Barat (Kiri)
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#1e293b';
+            ctx.font = 'bold 20px sans-serif';
+            ctx.fillText(`${b} m`, Math.min(tl_x, bl_x) - 20, cy - 12);
+            ctx.fillStyle = '#64748b';
+            ctx.font = 'normal 18px sans-serif';
+            ctx.fillText(`Batas: ${b_bat}`, Math.min(tl_x, bl_x) - 20, cy + 15);
+        }
+
+        // Fungsi Waktu (Hari, Tanggal, Jam, Menit, Detik)
+        function getIndonesianDateTime() {
+            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            
+            const d = new Date();
+            const dayName = days[d.getDay()];
+            const day = d.getDate();
+            const monthName = months[d.getMonth()];
+            const year = d.getFullYear();
+            
+            const hours = String(d.getHours()).padStart(2, '0');
+            const minutes = String(d.getMinutes()).padStart(2, '0');
+            const seconds = String(d.getSeconds()).padStart(2, '0');
+
+            return `${dayName}, ${day} ${monthName} ${year} Pukul ${hours}:${minutes}:${seconds} WIB`;
+        }
+
+        // Fungsi Waktu untuk Nama File PDF
+        function getIndonesianDateOnly() {
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const d = new Date();
+            const day = String(d.getDate()).padStart(2, '0');
+            const monthName = months[d.getMonth()];
+            const year = d.getFullYear();
+            return `${day} ${monthName} ${year}`;
+        }
+
+        // Fungsi Generate PDF
+        function generatePDF() {
+            // 1. Ekstrak gambar dari Canvas beresolusi tinggi yang sudah memiliki ruang padding besar
+            const canvas = document.getElementById('sketchCanvas');
+            const imgData = canvas.toDataURL('image/png', 1.0);
+
+            // 2. Buat Kontainer Virtual untuk PDF
+            const printContainer = document.createElement('div');
+            printContainer.style.width = '793px'; // Standar lebar A4 @96dpi
+            printContainer.style.padding = '40px'; // Margin dalam kertas
+            printContainer.style.fontFamily = 'Arial, sans-serif';
+            printContainer.style.color = '#1f2937';
+            printContainer.style.backgroundColor = '#ffffff';
+
+            // 3. Masukkan Struktur HTML Khusus Print
+            printContainer.innerHTML = `
+                <div style="text-align: center; border-bottom: 2px solid #1f2937; padding-bottom: 15px; margin-bottom: 30px;">
+                    <h1 style="font-size: 24px; font-weight: bold; margin: 0 0 8px 0; text-transform: uppercase;">
+                        Hasil Pengukuran Luas Tanah<br>Desa Tambakmulyo
+                    </h1>
+                    <h3 style="font-size: 14px; font-weight: normal; margin: 0; color: #4b5563;">
+                        Dicetak pada: ${getIndonesianDateTime()}
+                    </h3>
+                </div>
+                
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <p style="font-size: 16px; font-weight: bold; margin-bottom: 10px; color: #1f2937;">Sketsa Bidang Tanah dan Batas</p>
+                    <img src="${imgData}" style="width: 100%; max-width: 650px; height: auto; border: 1px solid #d1d5db; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);" />
+                </div>
+
+                <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 25px; text-align: center;">
+                    <h2 style="font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #0f172a; text-transform: uppercase;">Rincian Luas Tanah</h2>
+                    
+                    <p style="font-size: 38px; font-weight: bold; color: #2563eb; margin: 0 0 5px 0; line-height: 1;">
+                        ${currentLuas.toFixed(2)} <span style="font-size: 20px;">m²</span>
+                    </p>
+                    
+                    <p style="font-size: 24px; font-weight: bold; color: #475569; margin: 0;">
+                        ${currentUbin.toFixed(2)} <span style="font-size: 16px; font-weight: normal;">Ubin</span>
+                    </p>
+                    
+                    <div style="margin-top: 30px; padding-top: 15px; border-top: 1px dashed #cbd5e1;">
+                        <p style="font-size: 15px; font-weight: bold; color: #0f172a; margin: 0;">
+                            Pemerintah Desa Tambakmulyo, Kec. Puring, Kab. Kebumen
+                        </p>
+                    </div>
+                </div>
+            `;
+
+            // 4. Konfigurasi html2pdf
+            const dateStr = getIndonesianDateOnly();
+            const opt = {
+                margin:       10, // Margin kertas PDF luar (dalam mm)
+                filename:     `Hasil Ukur Tanah ${dateStr}.pdf`,
+                image:        { type: 'jpeg', quality: 1.0 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // 5. Eksekusi Print
+            html2pdf().set(opt).from(printContainer).save();
+        }
+    </script>
+</body>
+</html>
